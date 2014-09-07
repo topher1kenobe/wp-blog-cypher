@@ -31,6 +31,16 @@ Please this shortcode anywhere you'd like: [cypher-form] .  View the form.  Ente
 
 == Frequently Asked Questions ==
 
+= How does this work? =
+
+For every word in the input string it searches for a post with that word in it and grabs the post_id.  That's the first number in the keypair.
+
+Then it strips the html from the post, counts the words in the post, and figures out what number your word is.  That's the send number.
+
+So 385:16 would be post_id 385, word number 16.
+
+Decyphering is a little easier, since we know the numbers.  I simply look up the post by ID, strip the html, and grab the proper word number.
+
 = Why isn't this secure? =
 
 Because there's no encyption happening at all.  It's completely security through obscurity, and it's not even very obscure.
