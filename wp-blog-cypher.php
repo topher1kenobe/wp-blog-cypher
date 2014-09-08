@@ -4,7 +4,7 @@
  * Plugin URI: http://topher1kenobe.com
  * Description: Creates a blog cypher, similar to an Ottendorf cypher
  * Author: Topher
- * Version: 1.0
+ * Version: 1.1
  * Author URI: http://topher1kenobe.com
  * Text Domain: wp-blog-cypher
  */
@@ -219,12 +219,16 @@ class T1K_Blog_Cypher {
 
 		$input_array = explode( ' ', $string );
 
+
 		// blow up the string on spaces, giving us something like this: 1234:43
 		foreach ( $input_array as $key_pair ) {
 
 			// blow up each item on :
 			$key_parts = explode( ':', $key_pair );
 
+			if ( ! isset( $key_parts[1] ) ) {
+				return "Cheatin', eh? ";
+			}
 
 			$post_id = $key_parts[0];
 			$word_id = $key_parts[1];
@@ -239,7 +243,7 @@ class T1K_Blog_Cypher {
 
 				$output .=	$word;
 			} else {
-				$output .= 'wut wut wut?!? ';
+				$output .= "Sorry, I got nuthin' ";
 			}
 
 		}
