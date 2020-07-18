@@ -6,8 +6,8 @@ Uses the posts table as an Ottendorf cypher.
 **Contributors:** [topher1kenobe](http://profiles.wordpress.org/topher1kenobe)  
 **Tags:** [toy](http://wordpress.org/plugins/tags/toy), [cypher](http://wordpress.org/plugins/tags/cypher)  
 **Requires at least:** 3.0  
-**Tested up to:** 4.0  
-**Stable tag:** 1.1  
+**Tested up to:** 5.4  
+**Stable tag:** 1.2  
 **License:** [GPLv2 or later](http://www.gnu.org/licenses/gpl-2.0.html)  
 
 ## Description ##
@@ -55,6 +55,9 @@ Because my selection code is very very simplistic, and sometimes it makes mistak
 
 
 ## Changelog ##
+
+### 1.2 ###
+Added some refinements to make it MUCH more accurate
 
 ### 1.1 ###
 Some input validation, no functionality changes
