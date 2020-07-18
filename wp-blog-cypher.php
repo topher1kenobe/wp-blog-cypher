@@ -4,7 +4,7 @@
  * Plugin URI: http://topher1kenobe.com
  * Description: Creates a blog cypher, similar to an Ottendorf cypher
  * Author: Topher
- * Version: 1.1
+ * Version: 1.2
  * Author URI: http://topher1kenobe.com
  * Text Domain: wp-blog-cypher
  */
@@ -95,10 +95,10 @@ class T1K_Blog_Cypher {
 	public function form_shortcode() {
 		$output = '';
 
-		$output .= '<form action="./" method="post">' . "\n";
+		$output .= '<form action="./" method="post" id="encypher-form">' . "\n";
 			
 			$output .= '<label for="cypher_input">' . "\n";
-			$output .= '<input type="text" name="cypher_input" id="cypher_input" />' . "\n";
+			$output .= '<input type="text" name="cypher_input" id="cypher_input" /></label>' . "\n";
 
 
 			$output .= '<label><input type="radio" name="cypher_action" value="encypher" checked="checked" /> Encypher</label>' . "\n";
@@ -119,7 +119,7 @@ class T1K_Blog_Cypher {
 
 				if ( 'decypher' == $_POST['cypher_action'] ) {
 					$output .= '<h4>Your decyphered text:</h4>' . "\n";
-					$output .= '<p>' . $this->decypher_input( $_POST['cypher_input'] ) . '</p>';
+					$output .= '<p>' . ucfirst( strtolower( $this->decypher_input( $_POST['cypher_input'] ) ) ) . '</p>';
 				}
 
 			$output .= '</div>' . "\n";
@@ -128,6 +128,22 @@ class T1K_Blog_Cypher {
 
 		return $output;
 
+	}
+
+	/**
+	 * Removes all punctuation from input
+	 *
+	 * @access	private
+	 * @param	string	$input
+	 * @return	string
+	 */
+	private function remove_punctuation( $input ) {
+
+		if( empty( $input ) ) {
+			$input = '';
+		};
+
+        return preg_replace('/[^a-z0-9]+/i', ' ', $input);
 	}
 
 	/**
@@ -142,9 +158,11 @@ class T1K_Blog_Cypher {
 
 		$clean_content = strip_tags( $content );
 
+		$clean_content = $this->remove_punctuation( $clean_content );
+
 		$content_array = explode( ' ', $clean_content );
 
-		$key = array_search( $search, $content_array );
+		$key = array_search( strtolower( $search ), array_map('strtolower', $content_array ) );
 
 		return $key;
 
@@ -167,7 +185,24 @@ class T1K_Blog_Cypher {
 		foreach ( $input_array as $key => $word ) {
 
 			// find a post with that word with spaces on either side of it
-			$query = "SELECT `ID`, `post_content` FROM " . $this->wpdb->posts . " WHERE `post_content` LIKE '% " . wp_kses_post( $word ) . " %' ORDER BY RAND() LIMIT 1";
+			$query = "SELECT
+				`ID`,
+				`post_content`
+				FROM
+				" . $this->wpdb->posts . "
+				WHERE
+				(
+				`post_content` LIKE '% " . wp_kses_post( $word ) . " %'
+				OR
+				`post_content` LIKE '% " . wp_kses_post( $word ) . ".%'
+				OR
+				`post_content` LIKE '% " . wp_kses_post( $word ) . "?%'
+				)
+				AND
+				`post_status` = 'publish'
+				AND
+				`post_type` = 'post'
+				ORDER BY RAND() LIMIT 1";
 
 			$results = $this->wpdb->get_results( $query );
 
@@ -197,6 +232,8 @@ class T1K_Blog_Cypher {
 	private function get_word_from_content( $word_id, $content ) {
 
 		$clean_content = strip_tags( $content );
+
+		$clean_content = $this->remove_punctuation( $clean_content );
 
 		$content_array = explode( ' ', $clean_content );
 
