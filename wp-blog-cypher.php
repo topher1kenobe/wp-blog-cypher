@@ -1,13 +1,21 @@
 <?php
 /**
  * Plugin Name: WP Blog Cypher
- * Plugin URI: http://topher1kenobe.com
+ * Plugin URI: https://github.com/topher1kenobe/wp-blog-cypher
  * Description: Creates a blog cypher, similar to an Ottendorf cypher
  * Author: Topher
  * Version: 1.4
- * Author URI: http://topher1kenobe.com
+ * Author URI: https://topher1kenobe.com
+ * Requires at least: 4.0
+ * Requires PHP: 5.6
+ * License: GPLv2 or later
+ * License URI: https://www.gnu.org/licenses/gpl-2.0.html
  * Text Domain: wp-blog-cypher
  */
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
 
 
 /**
@@ -228,16 +236,18 @@ class T1K_Blog_Cypher {
 			}
 		}
 
-		$query = $this->wpdb->prepare(
-			"SELECT `ID`, `post_content` FROM " . $this->wpdb->posts . "
-			WHERE `post_content` LIKE %s
-			AND `post_status` = 'publish'
-			AND `post_type` = 'post'
-			ORDER BY RAND() LIMIT 50",
-			'%' . $this->wpdb->esc_like( $fragment ) . '%'
-		);
+		$wpdb = $this->wpdb;
 
-		$results = $this->wpdb->get_results( $query );
+		$results = $wpdb->get_results(
+			$wpdb->prepare(
+				"SELECT `ID`, `post_content` FROM {$wpdb->posts}
+				WHERE `post_content` LIKE %s
+				AND `post_status` = 'publish'
+				AND `post_type` = 'post'
+				ORDER BY RAND() LIMIT 50",
+				'%' . $wpdb->esc_like( $fragment ) . '%'
+			)
+		);
 
 		// confirm the word is really in the visible text, not just somewhere in the markup
 		foreach ( $results as $post ) {
@@ -293,6 +303,8 @@ class T1K_Blog_Cypher {
 
 		$output = '';
 
+		$wpdb = $this->wpdb;
+
 		// blow up the string on whitespace, giving us something like this: 1234:43
 		foreach ( preg_split( '/\s+/', trim( $string ) ) as $key_pair ) {
 
@@ -304,9 +316,12 @@ class T1K_Blog_Cypher {
 			$word_number = absint( $key_parts[2] );
 
 			// only published posts, the same ones encypher draws from
-			$query = "SELECT `post_content` FROM " . $this->wpdb->posts . " WHERE `ID` = " . $post_id . " AND `post_status` = 'publish' AND `post_type` = 'post'";
-
-			$results = $this->wpdb->get_col( $query );
+			$results = $wpdb->get_col(
+				$wpdb->prepare(
+					"SELECT `post_content` FROM {$wpdb->posts} WHERE `ID` = %d AND `post_status` = 'publish' AND `post_type` = 'post'",
+					$post_id
+				)
+			);
 
 			if ( 0 < count( $results ) ) {
 				$words = $this->get_words_from_content( $results[0] );

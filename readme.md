@@ -4,10 +4,11 @@ Uses the posts table as an Ottendorf cypher.
 
 **Contributors:** [topher1kenobe](http://profiles.wordpress.org/topher1kenobe)  
 **Tags:** [toy](http://wordpress.org/plugins/tags/toy), [cypher](http://wordpress.org/plugins/tags/cypher)  
-**Requires at least:** 3.0  
-**Tested up to:** 5.4  
+**Requires at least:** 4.0  
+**Requires PHP:** 5.6  
+**Tested up to:** 7.1  
 **Stable tag:** 1.4  
-**License:** [GPLv2 or later](http://www.gnu.org/licenses/gpl-2.0.html)  
+**License:** [GPLv2 or later](https://www.gnu.org/licenses/gpl-2.0.html)  
 
 ## Description ##
 
@@ -59,7 +60,7 @@ None of the published posts contain that word, so there's nothing to point to.  
 ## Changelog ##
 
 ### 1.4 ###
-Word counts now match the text a reader sees, so keys are accurate every time.  Word numbers start at 1.  Decyphering only reads published posts.  Security fixes.
+Word counts now match the text a reader sees, so keys are accurate every time.  Word numbers start at 1.  Decyphering only reads published posts.  Security fixes: all database queries are now prepared.  Tested up to WordPress 7.1.
 
 ### 1.3 ###
 Consolidate redundant code into method
